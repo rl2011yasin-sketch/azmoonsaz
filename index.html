@@ -1,0 +1,1093 @@
+<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0}</style></head><body><title>سوال‌ساز آزمون</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap">
+<style id="fontcss">
+/* compact header editor */
+#v-h .in{min-height:38px;padding:5px 10px;border-radius:10px;font-size:14px}
+#v-h .grp{padding:10px 12px}
+#v-h .grp>*+*{margin-top:6px}
+#v-h .pair{gap:5px}
+#v-h .pair{grid-template-columns:minmax(0,5fr) minmax(0,6fr) 38px}
+#v-h .pair.mid{grid-template-columns:minmax(0,1fr) auto 38px}
+#v-h .ibtn{width:38px;height:38px}
+#v-h .grp h3{margin:0;font-size:14px}
+.hprev{background:var(--deskbg);border-radius:12px;padding:8px;overflow:hidden}
+.hprev .hp{background:#fff;color:#000;padding:6px;border-radius:4px;overflow:hidden}
+.hprev .sheet{width:194mm}
+.pv{padding:6px}
+</style>
+<style id="sheetcss"></style>
+<style>
+/* Layout: phone = one screen at a time with a bottom tab bar; wide = editor column beside a live A4 sheet.
+   Palette: exam-paper ink. Ballpoint blue for actions, teacher's red pen only for scores and mismatches. */
+:root{
+  --bg:#eceff5;--surface:#ffffff;--surface2:#f3f5fa;--ink:#142033;--mut:#5b6980;--line:#d8deea;
+  --accent:#2646d6;--accent-ink:#ffffff;--accent-soft:#e2e8ff;
+  --red:#c4322a;--red-soft:#fdeceb;--ok:#1d8a4b;
+  --deskbg:#d5dae6;--shadow:0 1px 2px rgba(20,32,51,.08),0 6px 20px rgba(20,32,51,.08);
+  --f-ui:Vazirmatn,Tahoma,"Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1220;--surface:#161d2d;--surface2:#1d2639;--ink:#e8edf7;--mut:#9aa8c3;--line:#29344f;
+  --accent:#8fa6ff;--accent-ink:#0d1220;--accent-soft:#223060;
+  --red:#ff8c80;--red-soft:#3b2022;--ok:#59cf8c;--deskbg:#0a0e18;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1220;--surface:#161d2d;--surface2:#1d2639;--ink:#e8edf7;--mut:#9aa8c3;--line:#29344f;
+  --accent:#8fa6ff;--accent-ink:#0d1220;--accent-soft:#223060;
+  --red:#ff8c80;--red-soft:#3b2022;--ok:#59cf8c;--deskbg:#0a0e18;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);color-scheme:dark}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+svg{display:block;flex:none}
+[hidden]{display:none!important}
+
+/* ---- app bar ---- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar-in{display:flex;align-items:center;gap:12px;min-height:58px;padding-block:6px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.brand{flex:1;min-width:0;font-weight:800;font-size:19px;line-height:1.2}
+.brand small{display:block;font-weight:400;font-size:12px;color:var(--mut)}
+.stamp{border:2px solid var(--ink);border-radius:10px;padding:2px 12px;font-weight:800;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums;transform:rotate(-2deg)}
+.stamp.bad{border-color:var(--red);color:var(--red);background:var(--red-soft)}
+
+/* ---- tabs ---- */
+.nav{position:fixed;z-index:25;left:0;right:0;bottom:0;display:flex;gap:4px;background:var(--surface);border-top:1px solid var(--line);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:54px;border:0;border-radius:14px;background:none;color:var(--mut);font-size:12px;font-weight:500}
+.nav button svg{width:24px;height:24px}
+.nav button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent);font-weight:700}
+
+/* ---- views ---- */
+.cols{padding-block:16px 128px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.view{display:none}
+#app[data-tab="q"] #v-q,#app[data-tab="h"] #v-h,#app[data-tab="x"] #v-x,#app[data-tab="p"] #v-p{display:block}
+.view>*+*{margin-top:14px}
+h2{font-size:17px;font-weight:800;margin:0}
+h3{font-size:14px;font-weight:700;margin:0 0 8px;color:var(--mut)}
+.hint{font-size:13px;color:var(--mut);margin:0}
+.grp{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.grp>*+*{margin-top:10px}
+
+/* ---- controls ---- */
+.in{width:100%;min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);padding:8px 12px;color:var(--ink)}
+.in:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea.in{min-height:78px;line-height:1.8;resize:vertical}
+.btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 18px;border:1px solid var(--line);border-radius:13px;background:var(--surface);color:var(--ink);font-weight:500}
+.btn svg{width:20px;height:20px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.dng{color:var(--red)}
+.btn.sm{min-height:38px;padding:0 13px;font-size:14px;border-radius:11px}
+.btn.wide{width:100%}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.ibtn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;background:none;color:var(--mut)}
+.ibtn svg{width:22px;height:22px}
+.ibtn.dng{color:var(--red)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>.grow{flex:1;min-width:0}
+.pair{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr) 44px;gap:6px;align-items:center}
+.pair.mid{grid-template-columns:minmax(0,1fr) auto 44px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;background:var(--surface2);border-radius:13px;padding:4px}
+.seg label{display:flex;align-items:center;justify-content:center;text-align:center;min-height:42px;padding:2px 6px;border-radius:10px;font-size:13px;font-weight:500;color:var(--mut);cursor:pointer;line-height:1.3}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--surface);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(20,32,51,.15)}
+.seg label:has(input:focus-visible){outline:3px solid var(--accent)}
+.chip{min-height:38px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:13px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+.switch input{appearance:none;-webkit-appearance:none;width:50px;height:30px;border-radius:999px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:background .15s}
+.switch input::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:inset-inline-start .15s}
+.switch input:checked{background:var(--accent)}
+.switch input:checked::after{inset-inline-start:23px}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:13px;background:var(--surface2)}
+.stepper button{width:44px;height:44px;border:0;background:none;display:flex;align-items:center;justify-content:center}
+.stepper output{min-width:64px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>span{font-size:13px;font-weight:700;color:var(--mut)}
+.line{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px}
+.line>span:first-child{font-weight:500}
+.line+.line{border-top:1px solid var(--line)}
+.fileup{position:relative;overflow:hidden}
+.fileup input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+
+/* ---- import callout ---- */
+.import{display:flex;gap:14px;align-items:center;padding:14px;border-radius:16px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);text-align:start;width:100%}
+.import .ic{width:46px;height:46px;border-radius:14px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center}
+.import .ic svg{width:26px;height:26px}
+.import b{display:block;font-size:16px;color:var(--ink)}
+.import span.s{display:block;font-size:13px;color:var(--mut);line-height:1.5}
+
+/* ---- question cards ---- */
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.qhead{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 12px;border:0;background:none;text-align:start}
+.qnum{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex:none}
+.qmain{flex:1;min-width:0}
+.qtype{display:block;font-size:12px;font-weight:700;color:var(--accent)}
+.qsnip{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.qscore{color:var(--red);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;min-width:30px;text-align:center}
+.qchev{color:var(--mut);transition:transform .15s}
+.qcard.open .qchev{transform:rotate(180deg)}
+.qbody{padding:4px 12px 14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.qcard:not(.open) .qbody{display:none}
+.types{grid-auto-columns:1fr}
+.item{background:var(--surface2);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.ihead{display:flex;align-items:center;gap:8px}
+.ihead b{font-size:15px}
+.score{display:flex;align-items:center;gap:6px;margin-inline-start:auto;font-size:13px;font-weight:700;color:var(--red)}
+.score .in{width:78px;text-align:center;font-weight:800;color:var(--red);min-height:40px;background:var(--surface)}
+.opt{display:flex;align-items:center;gap:8px}
+.opt .in{background:var(--surface)}
+.opt .n{width:20px;text-align:center;color:var(--mut);font-weight:700;font-size:13px}
+.radio{appearance:none;-webkit-appearance:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--mut);flex:none;display:grid;place-items:center;cursor:pointer;background:var(--surface)}
+.radio:checked{border-color:var(--ok);background:var(--ok)}
+.radio:checked::after{content:"";width:10px;height:6px;border:solid #fff;border-width:0 0 3px 3px;transform:rotate(-45deg) translate(1px,-1px)}
+.thumb{height:44px;width:auto;max-width:90px;border-radius:8px;border:1px solid var(--line);background:#fff;object-fit:contain}
+.flag{font-size:12px;font-weight:700;color:var(--red);background:var(--red-soft);border-radius:8px;padding:2px 8px}
+.qacts{display:flex;gap:4px;justify-content:space-between;flex-wrap:wrap}
+.empty{text-align:center;padding:36px 16px;border:1.5px dashed var(--line);border-radius:16px;color:var(--mut)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+
+.fab{position:fixed;z-index:24;inset-inline-end:max(16px,env(safe-area-inset-right,0px));bottom:calc(82px + env(safe-area-inset-bottom,0px));height:56px;padding:0 22px 0 18px;border:0;border-radius:18px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow)}
+#app:not([data-tab="q"]) .fab{display:none}
+.fab svg{width:24px;height:24px}
+
+/* ---- preview ---- */
+.ptools{position:sticky;top:calc(58px + env(safe-area-inset-top,0px));z-index:15;display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:8px;background:var(--bg);border-radius:14px}
+.ptools .sp{flex:1;min-width:0}
+.ptools .btn.sm{padding:0 11px;min-height:40px}
+.ptools .zb{width:40px;padding:0}
+.pv{background:var(--deskbg);border-radius:16px;padding:10px;overflow:auto;overscroll-behavior:contain}
+.page{width:210mm;height:297mm;padding:8mm;background:#fff;margin:0 auto 12px;box-shadow:0 2px 14px rgba(0,0,0,.25);overflow:hidden;color:#000}
+#pages{transform-origin:top center}
+#measure{position:fixed;visibility:hidden;pointer-events:none;left:0;top:0;width:194mm;z-index:-1}
+
+/* ---- sheet + toast ---- */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(8,12,24,.55)}
+.sheet-ui{position:fixed;z-index:41;left:0;right:0;bottom:0;margin-inline:auto;width:100%;max-width:560px;max-height:90%;overflow:auto;background:var(--surface);border-radius:24px 24px 0 0;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px}
+.sheet-ui::before{content:"";width:44px;height:5px;border-radius:3px;background:var(--line);align-self:center;flex:none}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-height:104px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface2);text-align:start}
+.tile b{font-size:15px}
+.tile .g{font-size:13px;color:var(--mut);letter-spacing:1px;min-height:22px;display:flex;align-items:center;gap:5px}
+.dot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--mut);display:inline-block}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:112px;padding:14px;border:2px dashed var(--accent);border-radius:16px;background:var(--accent-soft);text-align:center;cursor:pointer;position:relative}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.bar-prog{height:8px;border-radius:4px;background:var(--surface2);overflow:hidden}
+.bar-prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.toast{position:fixed;z-index:60;inset-inline:16px;bottom:calc(88px + env(safe-area-inset-bottom,0px));margin-inline:auto;max-width:460px;display:none;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;background:var(--ink);color:var(--bg);box-shadow:var(--shadow)}
+.toast.on{display:flex}
+.toast span{flex:1;font-size:14px}
+.toast button{border:0;background:none;color:var(--accent);font-weight:800;min-height:36px;padding:0 6px}
+:root:not([data-theme="dark"]) .toast button{color:#9db0ff}
+
+/* ---- wide screens ---- */
+@media (min-width:1000px){
+  .nav{position:static;border:0;background:none;padding:0;gap:6px;width:min(450px,calc(100% - 32px));margin-inline-start:max(16px,env(safe-area-inset-right,0px));margin-top:12px}
+  .nav button{flex-direction:row;min-height:44px;font-size:14px;background:var(--surface);border:1px solid var(--line)}
+  .nav button[data-t="p"]{display:none}
+  .nav button[aria-selected="true"]{border-color:var(--accent)}
+  .cols{display:grid;grid-template-columns:minmax(360px,450px) minmax(0,1fr);gap:22px;align-items:start;padding-bottom:48px}
+  .col-prev{position:sticky;top:calc(74px + env(safe-area-inset-top,0px))}
+  #app .col-prev #v-p{display:block}
+  .col-prev .pv{max-height:calc(100vh - 150px)}
+  .col-prev .ptools{position:static;padding:0 0 8px}
+  .fab{inset-inline-end:auto;inset-inline-start:calc(max(16px,env(safe-area-inset-right,0px)) + 300px);bottom:28px}
+  .toast{bottom:28px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="app" data-tab="q">
+  <header class="bar"><div class="bar-in">
+    <div class="brand">سوال‌ساز آزمون<small>برگه‌ی امتحانی A4 با بارم‌بندی</small></div>
+    <div class="stamp" id="stamp" role="status">بارم ۰</div>
+  </div></header>
+  <nav class="nav" id="nav" aria-label="بخش‌ها"></nav>
+  <main class="cols">
+    <div class="col-edit">
+      <section class="view" id="v-q">
+        <button class="import" id="btn-import" data-act="import" type="button">
+          <span class="ic" id="ic-import"></span>
+          <span><b>ورود سوال از فایل</b><span class="s">PDF یا عکس برگه‌ی امتحان را بدهید؛ سوال‌ها و بارم‌ها خودکار در همین قالب می‌آیند و بعد قابل ویرایش‌اند.</span></span>
+        </button>
+        <div id="qs" class="qlist" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+      <section class="view" id="v-h"></section>
+      <section class="view" id="v-x"></section>
+    </div>
+    <div class="col-prev">
+      <section class="view" id="v-p">
+        <div class="ptools">
+          <button class="btn sm zb" data-act="zoom" data-d="-0.25" aria-label="کوچک‌تر"></button>
+          <button class="btn sm" data-act="zoom" data-d="0" id="zfit">متناسب</button>
+          <button class="btn sm zb" data-act="zoom" data-d="0.25" aria-label="بزرگ‌تر"></button>
+          <span class="sp"></span>
+          <button class="btn sm pri" data-act="pdf">PDF</button>
+          <button class="btn sm pri" data-act="docx">Word</button>
+        </div>
+        <div class="pv" id="pv"><div class="sheet" id="pages" dir="rtl"></div></div>
+      </section>
+    </div>
+  </main>
+  <button class="fab" id="fab" data-act="addsheet" type="button"></button>
+  <div id="measure" class="sheet" dir="rtl"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="sheet-ui" id="sheetui" role="dialog" aria-modal="true" hidden></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const nl=s=>esc(s).replace(/\n/g,'<br>');
+const PD='۰۱۲۳۴۵۶۷۸۹';
+const faInt=n=>String(n).replace(/\d/g,d=>PD[d]);
+const fa=n=>{n=+n||0;return faInt(String(+n.toFixed(2))).replace('.','/')};
+const scTxt=v=>(v===''||v==null)?'':fa(v);
+const num=v=>{
+ const s=String(v==null?'':v).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[\/٫,،]/g,'.');
+ const n=parseFloat(s);return isNaN(n)?0:n;
+};
+const hasNum=v=>String(v==null?'':v).trim()!=='';
+const LBL=['الف','ب','ج','د','ه','و','ز','ح','ط','ی','ک','ل','م','ن','س','ع'];
+const TYPES={essay:'تشریحی',mcq:'چهارگزینه‌ای',tf:'صحیح / غلط',blank:'جای‌خالی'};
+const TITLES={essay:'به سؤالات زیر پاسخ کامل دهید.',mcq:'گزینه ی صحیح را مشخص کنید.',tf:'صحیح و غلط بودن جملات زیر را مشخص کنید.',blank:'جاهای خالی را با کلمات مناسب پر کنید.'};
+const KEY='examMaker_v4';
+let FORWORD=false;
+
+const DEFAULT_LOGO='data:image/jpeg;base64,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';
+function newItem(o){return Object.assign({id:uid(),text:'',img:'',nw:0,nh:0,imgW:'s',options:['','','',''],correct:-1,tf:'',answer:'',space:''},o||{})}
+function newQ(type,o){return Object.assign({id:uid(),type,title:'',optLayout:'4',score:'',items:[newItem()]},o||{})}
+function defaultState(){
+ const q1=newQ('tf',{score:1.5,title:'صحیح و غلط بودن جملات زیر را مشخص کنید.',items:[
+  newItem({text:'وسعت آبها در نیمکره‌ی شمالی بیشتر از نیمکره جنوبی است.',tf:'f'}),
+  newItem({text:'سیاره زمین در مداری دایره‌ای شکل به دور خورشید می‌چرخد.',tf:'f'}),
+  newItem({text:'درختان بائوباب از گونه‌های گیاهی مشهور جنگل‌های بارانی استوایی می‌باشد.',tf:'f'})]});
+ const q2=newQ('blank',{score:1.5,title:'جاهای خالی را با کلمات مناسب پر کنید.',items:[
+  newItem({text:'در نا همواریهای جوان شیب دامنه ها ........... و دره ها .......... می با شند.',answer:'تند - عمیق'}),
+  newItem({text:'مدارها بین صفر تا ........ درجه ی شمالی و جنوبی درجه بندی می شوند.',answer:'۹۰'})]});
+ const q3=newQ('mcq',{score:1,title:'گزینه ی صحیح را مشخص کنید.',items:[
+  newItem({text:'کدام یک از عوامل زیر جزء عوامل انسانی پراکندگی جمعیت است؟',options:['ذخایر معدنی','ناهمواریها','پوشش گیاهی','فرهنگ'],correct:3}),
+  newItem({text:'مهاجرت افغانها و یا عراقی ها به کشور های همسایه بدلیل جنگ جزء کدام نوع از مهاجرتها می با شد؟',options:['خارجی','داخلی','اجباری','۱ و ۳ صحیح است'],correct:3})]});
+ const q4=newQ('essay',{score:1,title:'به سؤالات زیر پاسخ کامل دهید.',items:[newItem({text:'منظور از عرض جغرافیایی چیست ؟',answer:'فاصله‌ی هر مکان از خط استوا تا قطب.'})]});
+ return{
+  headRight:[['شماره امتحانی',''],['نام و نام خانوادگی',''],['نام پدر',''],['کلاس','      /']].map(([l,v])=>({id:uid(),label:l,value:v})),
+  headLeft:[['تاریخ','     /      /   ۱۴۰۵'],['زمان','            دقیقه'],['نام دبیر','آقای'],['آزمون ماه',''],['نام درس','']].map(([l,v])=>({id:uid(),label:l,value:v})),
+  headMid:[{id:uid(),text:'آزمون میان نوبت اول',bold:true},{id:uid(),text:'سال تحصیلی ۱۴۰۶-۱۴۰۵',bold:true}],
+  set:{fontName:'',fontData:'',fontSize:11,ans:'none',space:1.5,target:'',footer:'موفق و پیروز باشید',colTitle:'شرح سؤالات',headTitle:'اداره آموزش و پرورش منطقه ۱۸ شهر تهران',logo:DEFAULT_LOGO,logoNW:243,logoNH:144,logoH:75,showTotal:false},
+  questions:[q1,q2,q3,q4],isSample:true
+ };
+}
+
+
+/* ---------- icons ---------- */
+const ic=(p,extra)=>`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra||''}>${p}</svg>`;
+const ICON={
+ list:ic('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>'),
+ head:ic('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v6M7 15h10"/>'),
+ page:ic('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>'),
+ down:ic('<path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/>'),
+ plus:ic('<path d="M12 5v14M5 12h14"/>'),
+ minus:ic('<path d="M5 12h14"/>'),
+ x:ic('<path d="M6 6l12 12M18 6 6 18"/>'),
+ chev:ic('<path d="M6 9l6 6 6-6"/>'),
+ up:ic('<path d="M12 19V5m0 0-6 6m6-6 6 6"/>'),
+ dn:ic('<path d="M12 5v14m0 0-6-6m6 6 6-6"/>'),
+ copy:ic('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/>'),
+ trash:ic('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),
+ img:ic('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/>'),
+ file:ic('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M12 17v-5m0 0-2 2m2-2 2 2"/>'),
+ scan:ic('<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/>')
+};
+
+/* ---------- state ---------- */
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+function normalize(){
+ const d=defaultState();S=Object.assign(d,S||{});S.set=Object.assign(defaultState().set,S.set||{});
+ if(!Array.isArray(S.questions)||!S.questions.every(q=>q&&Array.isArray(q.items)))S.questions=[];
+ S.questions.forEach(q=>{
+  if(!('score' in q)){const any=q.items.some(i=>hasNum(i.score));q.score=any?Math.round(q.items.reduce((a,i)=>a+num(i.score),0)*100)/100:''}
+  q.items.forEach(i=>{delete i.score});
+ });
+}
+normalize();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const findQ=id=>S.questions.find(q=>q.id===id);
+const findI=(qid,iid)=>{const q=findQ(qid);return q&&q.items.find(i=>i.id===iid)};
+const qScore=q=>num(q.score);
+const total=()=>S.questions.reduce((a,q)=>a+qScore(q),0);
+let tm;
+function ch(full){save();clearTimeout(tm);tm=setTimeout(updatePreview,150);refreshTotals();if(full)renderQs()}
+function qch(full){S.isSample=false;ch(full)}
+const wide=()=>window.matchMedia('(min-width:1000px)').matches;
+const openQ=new Set();
+const capCache={};
+async function cap(n){
+ if(capCache[n])return capCache[n];
+ let r=null;try{r=(window.claude&&window.claude.use)?await window.claude.use(n):null}catch(e){}
+ if(r)capCache[n]=r;return r||null;
+}
+
+/* ---------- toast / sheet / undo ---------- */
+let tt;
+function toast(msg,label,fn){
+ const t=$('toast');t.textContent='';
+ const s=document.createElement('span');s.textContent=msg;t.append(s);
+ if(label){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=()=>{t.classList.remove('on');fn&&fn()};t.append(b)}
+ t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),label?7000:3500);
+}
+function snapUndo(){const snap=JSON.stringify(S);return()=>{S=JSON.parse(snap);normalize();initAll();save()}}
+function pushUndo(msg){toast(msg,'برگرداندن',snapUndo())}
+let sheetBusy=false;
+function openSheet(html){$('sheetui').innerHTML=html;$('sheetui').hidden=false;$('scrim').hidden=false}
+function closeSheet(force){if(sheetBusy&&!force)return;$('sheetui').hidden=true;$('scrim').hidden=true;$('sheetui').innerHTML=''}
+
+/* ---------- tabs ---------- */
+let TAB='q',zmul=1;
+const TABS=[['q','سوال‌ها',ICON.list],['h','سربرگ',ICON.head],['p','برگه',ICON.page],['x','خروجی',ICON.down]];
+function renderNav(){
+ $('nav').innerHTML=TABS.map(([k,l,i])=>`<button type="button" role="tab" data-act="tab" data-t="${k}" aria-selected="${k===TAB}">${i}<span>${l}</span></button>`).join('');
+}
+function setTab(t,noScroll){
+ if(wide()&&t==='p')t='q';
+ TAB=t;$('app').dataset.tab=t;
+ $('nav').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.t===t)));
+ if(t==='p')requestAnimationFrame(fit);
+ if(t==='h')requestAnimationFrame(updateHprev);
+ if(!noScroll)window.scrollTo(0,0);
+}
+
+/* ---------- question editor ---------- */
+function qSnip(q){const t=(q.items[0]&&q.items[0].text)||q.title||'';return t.trim()||'سوال بدون متن'}
+function itemEd(q,it,j){
+ const multi=q.items.length>1,a=`data-f="item" data-q="${q.id}" data-i="${it.id}"`;
+ let h=`<div class="item">${multi?`<div class="ihead"><b>${LBL[j]})</b><button type="button" class="ibtn dng" style="margin-inline-start:auto" data-act="delitem" data-q="${q.id}" data-i="${it.id}" aria-label="حذف این بخش">${ICON.x}</button></div>`:''}
+ <textarea class="in" rows="2" placeholder="${q.type==='blank'?'متن سوال (جای خالی را با ........ بسازید)':'متن سوال…'}" ${a} data-k="text">${esc(it.text)}</textarea>`;
+ h+=`<div class="row"><label class="btn sm fileup">${ICON.img}<span>${it.img?'تغییر تصویر':'افزودن تصویر'}</span><input type="file" accept="image/*" data-file="img" data-q="${q.id}" data-i="${it.id}"></label>`;
+ if(it.img)h+=`<img class="thumb" src="${it.img}" alt=""><select class="in" style="width:auto;min-height:38px" ${a} data-k="imgW" aria-label="اندازه‌ی تصویر">${[['xs','خیلی کوچک'],['s','کوچک'],['m','متوسط'],['l','بزرگ']].map(([k,v])=>`<option value="${k}" ${(it.imgW||'s')===k?'selected':''}>${v}</option>`).join('')}</select><button type="button" class="ibtn dng" data-act="rmimg" data-q="${q.id}" data-i="${it.id}" aria-label="حذف تصویر">${ICON.x}</button>`;
+ else if(it.needsImage)h+=`<span class="flag">در برگه‌ی اصلی تصویر داشت</span>`;
+ h+='</div>';
+ if(q.type==='mcq'){
+  h+=it.options.map((o,k)=>`<div class="opt"><input type="radio" class="radio" name="c_${it.id}" ${it.correct===k?'checked':''} ${a} data-k="correct" data-v="${k}" aria-label="گزینه‌ی ${faInt(k+1)} پاسخ صحیح است"><span class="n">${faInt(k+1)}</span><input class="in" placeholder="گزینه‌ی ${faInt(k+1)}" value="${esc(o)}" ${a} data-k="opt" data-v="${k}"></div>`).join('')+`<p class="hint">دایره‌ی کنار هر گزینه را برای پاسخ صحیح بزنید. بارم فقط برای کل سوال است.</p>`;
+ }else if(q.type==='tf'){
+  h+=`<div class="seg" role="radiogroup" aria-label="پاسخ صحیح">${[['','بدون پاسخ'],['t','صحیح'],['f','غلط']].map(([v,l])=>`<label><input type="radio" name="tf_${it.id}" value="${v}" ${it.tf===v?'checked':''} ${a} data-k="tf">${l}</label>`).join('')}</div>`;
+ }else if(q.type==='blank'){
+  h+=`<input class="in" placeholder="پاسخ جای‌خالی" value="${esc(it.answer)}" ${a} data-k="answer">`;
+ }else{
+  h+=`<textarea class="in" rows="2" placeholder="پاسخ تشریحی (اختیاری)" ${a} data-k="answer">${esc(it.answer)}</textarea><label class="row" style="flex-wrap:nowrap"><span class="hint grow">فضای پاسخ (cm)، خالی = پیش‌فرض</span><input class="in" style="width:84px;text-align:center" inputmode="decimal" placeholder="${faInt(S.set.space)}" value="${it.space===''||it.space==null?'':esc(fa(it.space))}" ${a} data-k="space"></label>`;
+ }
+ return h+'</div>';
+}
+function qCard(q,n){
+ const open=openQ.has(q.id),a=`data-f="q" data-q="${q.id}"`;
+ return `<article class="qcard${open?' open':''}" id="qc_${q.id}"><button type="button" class="qhead" data-act="toggleq" data-q="${q.id}" aria-expanded="${open}">
+ <span class="qnum">${faInt(n)}</span><span class="qmain"><span class="qtype">${TYPES[q.type]}</span><span class="qsnip" id="sn_${q.id}">${esc(qSnip(q))}</span></span>
+ <span class="qscore" id="qs_${q.id}">${fa(qScore(q))}</span><span class="qchev">${ICON.chev}</span></button>
+ <div class="qbody">
+  <div class="seg types" role="radiogroup" aria-label="نوع سوال">${Object.entries(TYPES).map(([k,v])=>`<label><input type="radio" name="ty_${q.id}" value="${k}" ${q.type===k?'checked':''} ${a} data-k="type">${v}</label>`).join('')}</div>
+  <label class="score" style="margin-inline-start:0;align-self:flex-start">بارم این سوال<input class="in" inputmode="decimal" autocomplete="off" placeholder="۰" value="${esc(scTxt(q.score))}" ${a} data-k="score"></label>
+  <label class="field"><span>دستور سوال (زیرخط‌دار)</span><input class="in" placeholder="مثلاً: گزینه ی صحیح را مشخص کنید." value="${esc(q.title)}" ${a} data-k="title"></label>
+  ${q.type==='mcq'?`<label class="field"><span>چیدمان گزینه‌ها</span><select class="in" ${a} data-k="optLayout">${[['4','چهار در یک خط'],['2','دو ستونه'],['1','زیر هم']].map(([v,l])=>`<option value="${v}" ${q.optLayout===v?'selected':''}>${l}</option>`).join('')}</select></label>`:''}
+  ${q.items.map((it,j)=>itemEd(q,it,j)).join('')}
+  <button type="button" class="btn sm" data-act="additem" data-q="${q.id}">${ICON.plus}<span>زیرسوال (الف، ب، ج …)</span></button>
+  <div class="qacts"><button type="button" class="btn sm" data-act="mv" data-q="${q.id}" data-d="-1">${ICON.up}<span>بالا</span></button><button type="button" class="btn sm" data-act="mv" data-q="${q.id}" data-d="1">${ICON.dn}<span>پایین</span></button><button type="button" class="btn sm" data-act="dup" data-q="${q.id}">${ICON.copy}<span>کپی</span></button><button type="button" class="btn sm dng" data-act="delq" data-q="${q.id}">${ICON.trash}<span>حذف</span></button></div>
+ </div></article>`;
+}
+function renderQs(){
+ const el=$('qs');
+ el.innerHTML=S.questions.length?S.questions.map((q,n)=>qCard(q,n+1)).join(''):`<div class="empty"><b>هنوز سوالی نیست</b>با دکمه‌ی «سوال جدید» شروع کنید یا بالا از فایل PDF وارد کنید.</div>`;
+ refreshTotals();
+}
+function refreshTotals(){
+ const t=total(),tg=hasNum(S.set.target)?num(S.set.target):NaN,st=$('stamp');
+ const bad=!isNaN(tg)&&Math.abs(t-tg)>0.001;
+ st.textContent='بارم '+fa(t)+(isNaN(tg)?'':' از '+fa(tg));
+ st.classList.toggle('bad',bad);
+ S.questions.forEach(q=>{const e=$('qs_'+q.id);if(e)e.textContent=fa(qScore(q))});
+}
+
+/* ---------- header / export tabs ---------- */
+function hdrList(name,title){
+ return `<div class="grp"><h3>${title}</h3>${S[name].map(f=>`<div class="pair"><input class="in" placeholder="عنوان" value="${esc(f.label)}" data-f="hf" data-l="${name}" data-id="${f.id}" data-k="label"><input class="in" placeholder="مقدار (خالی می‌ماند)" value="${esc(f.value)}" data-f="hf" data-l="${name}" data-id="${f.id}" data-k="value"><button type="button" class="ibtn dng" data-act="delhf" data-l="${name}" data-id="${f.id}" aria-label="حذف">${ICON.x}</button></div>`).join('')}<button type="button" class="btn sm" data-act="addhf" data-l="${name}">${ICON.plus}<span>افزودن مورد</span></button></div>`;
+}
+function renderHdr(){
+ $('v-h').innerHTML=`<div class="hprev"><div class="hp"><div class="sheet" id="hprevin" dir="rtl"></div></div></div><p class="hint">مقدارِ خالی در برگه خالی می‌ماند تا با دست پر شود.</p>
+ ${hdrList('headRight','ستون راست (مشخصات دانش‌آموز)')}
+ <div class="grp"><h3>وسط سربرگ</h3>
+  <label class="field"><span>عنوان بالای وسط</span><input class="in" value="${esc(S.set.headTitle)}" data-f="set" data-k="headTitle" data-t="str"></label>
+  <div class="field"><span>متن کنار لوگو</span></div>
+  ${S.headMid.map(x=>`<div class="pair mid"><input class="in" value="${esc(x.text)}" data-f="hm" data-id="${x.id}" data-k="text"><button type="button" class="chip" aria-pressed="${!!x.bold}" data-act="boldhm" data-id="${x.id}">پررنگ</button><button type="button" class="ibtn dng" data-act="delhm" data-id="${x.id}" aria-label="حذف">${ICON.x}</button></div>`).join('')}
+  <button type="button" class="btn sm" data-act="addhm">${ICON.plus}<span>افزودن خط</span></button></div>
+ ${hdrList('headLeft','ستون چپ (درس، تاریخ، زمان…)')}
+ <div class="grp"><h3>لوگوی مدرسه</h3>
+  <div class="row">${S.set.logo?`<img class="thumb" style="height:56px;max-width:110px" src="${S.set.logo}" alt="لوگو">`:'<span class="hint">بدون لوگو</span>'}
+  <label class="btn sm fileup">${ICON.img}<span>${S.set.logo?'جایگزین کردن':'بارگذاری لوگو'}</span><input type="file" accept="image/*" data-file="logo"></label>
+  ${S.set.logo?`<button type="button" class="btn sm dng" data-act="rmlogo">حذف</button>`:''}<button type="button" class="btn sm" data-act="deflogo">لوگوی پیش‌فرض</button></div>
+  <div class="line"><span>ارتفاع لوگو</span>${stepper('logoH',5,'px')}</div>
+  <label class="switch"><span>نمایش «بارم کل» در ستون چپ</span><input type="checkbox" ${S.set.showTotal?'checked':''} data-f="set" data-k="showTotal" data-t="bool"></label>
+ </div>`;
+}
+function updateHprev(){
+ const el=$('hprevin');if(!el)return;
+ el.innerHTML=headHTML();
+ const p=el.parentElement,w=p.clientWidth-12;if(w<=0)return;
+ const z=w/(194/25.4*96);el.style.zoom=z;
+}
+function stepper(k,step,unit){
+ return `<span class="stepper"><button type="button" data-act="step" data-k="${k}" data-d="${step}" aria-label="افزایش">${ICON.plus}</button><output id="sv_${k}">${fa(S.set[k])}${unit?' '+unit:''}</output><button type="button" data-act="step" data-k="${k}" data-d="${-step}" aria-label="کاهش">${ICON.minus}</button></span>`;
+}
+const STEP={fontSize:[8,24,'pt'],space:[0,15,'cm'],logoH:[30,200,'px']};
+function renderX(){
+ const a=S.set.ans;
+ $('v-x').innerHTML=`<div class="grp"><h3>دریافت فایل</h3>
+  <div class="row"><button type="button" class="btn pri grow" data-act="pdf">${ICON.down}<span>PDF</span></button><button type="button" class="btn pri grow" data-act="docx">${ICON.down}<span>Word</span></button></div>
+  <p class="hint">خروجی هر دو در اندازه‌ی A4 است. PDF به‌صورت تصویر ساخته می‌شود (متنش قابل انتخاب نیست) و Word قابل ویرایش است.</p></div>
+ <div class="grp"><h3>پاسخ‌ها در خروجی</h3>
+  <div class="seg" role="radiogroup" aria-label="نمایش پاسخ‌ها">${[['none','بدون پاسخ'],['inline','زیر هر سوال'],['end','پاسخنامه جدا']].map(([v,l])=>`<label><input type="radio" name="ans" value="${v}" ${a===v?'checked':''} data-f="set" data-k="ans" data-t="str">${l}</label>`).join('')}</div>
+  <p class="hint">«بدون پاسخ» برگه‌ی دانش‌آموز است. دو حالت دیگر برای دبیر.</p></div>
+ <div class="grp"><h3>ظاهر برگه</h3>
+  <div class="line"><span>اندازه‌ی فونت</span>${stepper('fontSize',0.5,'pt')}</div>
+  <div class="line"><span>فضای پیش‌فرض پاسخ تشریحی</span>${stepper('space',0.5,'cm')}</div>
+  <div class="line"><span>فونت</span><span class="row" style="flex-wrap:nowrap"><b id="fontname" style="font-weight:500;color:var(--mut);font-size:13px">${esc(S.set.fontName||'پیش‌فرض')}</b><label class="btn sm fileup"><span>بارگذاری</span><input type="file" accept=".ttf,.otf,.woff,.woff2" data-file="font"></label>${S.set.fontName?`<button type="button" class="btn sm dng" data-act="clearfont">حذف</button>`:''}</span></div>
+  <p class="hint">فونت در PDF و پیش‌نمایش اعمال می‌شود. در فایل Word باید همان فونت روی خود دستگاه نصب باشد.</p></div>
+ <div class="grp"><h3>جدول و پایان برگه</h3>
+  <label class="field"><span>بارم کل مورد انتظار (برای هشدار مغایرت)</span><input class="in" inputmode="decimal" placeholder="مثلاً ۲۰" value="${S.set.target===''?'':esc(fa(S.set.target))}" data-f="set" data-k="target" data-t="raw"></label>
+  <label class="field"><span>عنوان ستون وسط جدول</span><input class="in" value="${esc(S.set.colTitle)}" data-f="set" data-k="colTitle" data-t="str"></label>
+  <label class="field"><span>متن پایان برگه</span><input class="in" value="${esc(S.set.footer)}" data-f="set" data-k="footer" data-t="str"></label></div>
+ <div class="grp"><h3>پروژه</h3><div class="row">
+  <button type="button" class="btn sm" data-act="saveproj">ذخیره‌ی پروژه</button>
+  <label class="btn sm fileup"><span>باز کردن پروژه</span><input type="file" accept=".json,application/json" data-file="proj"></label>
+  <button type="button" class="btn sm dng" data-act="reset">شروع تازه</button></div>
+  <p class="hint">کار شما خودکار روی همین دستگاه ذخیره می‌شود.</p></div>`;
+}
+
+/* ---------- mutations ---------- */
+function onField(el){
+ const f=el.dataset.f,k=el.dataset.k;let v=el.value;
+ if(f==='item'){
+  const it=findI(el.dataset.q,el.dataset.i);if(!it)return;
+  if(k==='space'){it[k]=hasNum(v)?num(v):''}
+  else if(k==='correct'){it.correct=+el.dataset.v}
+  else if(k==='opt'){it.options[+el.dataset.v]=v}
+  else{it[k]=v;if(k==='text'){const q=findQ(el.dataset.q);const s=$('sn_'+q.id);if(s&&q.items[0]===it)s.textContent=qSnip(q)}}
+  qch(false);
+ }else if(f==='q'){
+  const q=findQ(el.dataset.q);if(!q)return;
+  if(k==='type'){q.type=v;qch(true);return}
+  if(k==='score'){q.score=hasNum(v)?num(v):'';qch(false);return}
+  q[k]=v;if(k==='title'){const s=$('sn_'+q.id);if(s)s.textContent=qSnip(q)}
+  qch(k==='optLayout'?false:false);
+ }else if(f==='hf'){S[el.dataset.l].find(x=>x.id===el.dataset.id)[k]=v;ch()}
+ else if(f==='hm'){S.headMid.find(x=>x.id===el.dataset.id)[k]=v;ch()}
+ else if(f==='set'){
+  const t=el.dataset.t;
+  if(t==='bool')S.set[k]=el.checked;else if(t==='raw')S.set[k]=hasNum(v)?num(v):'';else S.set[k]=v;
+  ch();
+ }
+}
+function addQ(type){
+ const q=newQ(type,{title:TITLES[type],score:type==='essay'?1:0.5,items:[newItem()]});
+ if(type==='mcq')q.items[0].options=['','','',''];
+ S.questions.push(q);openQ.add(q.id);qch(true);closeSheet();setTab('q',true);
+ requestAnimationFrame(()=>{const c=$('qc_'+q.id);if(c){c.scrollIntoView({block:'center'});const t=c.querySelector('textarea');t&&t.focus({preventScroll:true})}});
+}
+function stepSet(k,d){
+ const [lo,hi]=STEP[k];let v=Math.round((num(S.set[k])+d)*100)/100;v=Math.max(lo,Math.min(hi,v));S.set[k]=v;
+ const o=$('sv_'+k);if(o)o.textContent=fa(v)+' '+STEP[k][2];ch();
+}
+function readImg(file,max,cb){
+ const r=new FileReader();
+ r.onerror=()=>toast('خواندن تصویر ممکن نشد.');
+ r.onload=()=>{const im=new Image();im.onerror=()=>toast('این فایل تصویر معتبر نیست.');im.onload=()=>{
+  let w=im.naturalWidth,h=im.naturalHeight;const k=Math.min(1,max/w);w=Math.max(1,Math.round(w*k));h=Math.max(1,Math.round(h*k));
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);
+  cb(c.toDataURL('image/jpeg',.88),w,h)};im.src=r.result};
+ r.readAsDataURL(file);
+}
+function applyFont(){
+ $('fontcss').textContent=S.set.fontData?`@font-face{font-family:"${S.set.fontName}";src:url(${S.set.fontData})}`:'';
+ if(document.fonts&&S.set.fontName)document.fonts.load(`12pt "${S.set.fontName}"`).then(updatePreview).catch(()=>{});
+}
+function fontFaceCss(){return S.set.fontData?`@font-face{font-family:"${S.set.fontName}";src:url(${S.set.fontData})}`:''}
+function onFile(el){
+ const f=el.files&&el.files[0],kind=el.dataset.file;if(!f)return;
+ if(kind==='img')readImg(f,800,(u,w,h)=>{const it=findI(el.dataset.q,el.dataset.i);if(!it)return;it.img=u;it.nw=w;it.nh=h;it.needsImage=false;qch(true)});
+ else if(kind==='logo')readImg(f,600,(u,w,h)=>{S.set.logo=u;S.set.logoNW=w;S.set.logoNH=h;renderHdr();ch()});
+ else if(kind==='font'){const r=new FileReader();r.onload=()=>{S.set.fontData=r.result;S.set.fontName=f.name.replace(/\.[^.]+$/,'').replace(/["'\\<>&]/g,'');applyFont();renderX();ch();toast('فونت بارگذاری شد.')};r.readAsDataURL(f)}
+ else if(kind==='proj')f.text().then(t=>{try{const x=JSON.parse(t);if(!x.questions||!x.questions.every(q=>q&&Array.isArray(q.items)))throw 0;S=x;normalize();initAll();save();toast('پروژه باز شد.')}catch(e){toast('فایل پروژه معتبر نیست.')}});
+ else if(kind==='import'){imp.files=[...el.files];impShowFiles()}
+ if(kind!=='import')el.value='';
+}
+const ACT={
+ tab:b=>setTab(b.dataset.t),
+ toggleq:b=>{const id=b.dataset.q;openQ.has(id)?openQ.delete(id):openQ.add(id);const c=$('qc_'+id);c.classList.toggle('open',openQ.has(id));b.setAttribute('aria-expanded',openQ.has(id))},
+ addsheet:()=>openSheet(`<h2>سوال جدید</h2><div class="tiles">
+  <button class="tile" type="button" data-act="addq" data-type="essay"><span class="g">━━━ ━━<br>━━━━</span><b>تشریحی</b></button>
+  <button class="tile" type="button" data-act="addq" data-type="mcq"><span class="g"><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i></span><b>چهارگزینه‌ای</b></button>
+  <button class="tile" type="button" data-act="addq" data-type="tf"><span class="g">ص <i class="dot"></i> غ <i class="dot"></i></span><b>صحیح / غلط</b></button>
+  <button class="tile" type="button" data-act="addq" data-type="blank"><span class="g">……… ……</span><b>جای‌خالی</b></button></div>
+  <button class="btn wide" type="button" data-act="closesheet">بستن</button>`),
+ addq:b=>addQ(b.dataset.type),
+ closesheet:()=>closeSheet(),
+ mv:b=>{const i=S.questions.findIndex(q=>q.id===b.dataset.q),j=i+(+b.dataset.d);if(j<0||j>=S.questions.length)return;[S.questions[i],S.questions[j]]=[S.questions[j],S.questions[i]];qch(true);const c=$('qc_'+b.dataset.q);c&&c.scrollIntoView({block:'center'})},
+ dup:b=>{const i=S.questions.findIndex(q=>q.id===b.dataset.q);const c=JSON.parse(JSON.stringify(S.questions[i]));c.id=uid();c.items.forEach(x=>x.id=uid());S.questions.splice(i+1,0,c);openQ.add(c.id);qch(true)},
+ delq:b=>{pushUndo('سوال حذف شد');S.questions=S.questions.filter(q=>q.id!==b.dataset.q);qch(true)},
+ additem:b=>{const q=findQ(b.dataset.q),l=q.items[q.items.length-1];q.items.push(newItem({options:['','','','']}));qch(true)},
+ delitem:b=>{const q=findQ(b.dataset.q);if(q.items.length<2)return;pushUndo('بخش حذف شد');q.items=q.items.filter(x=>x.id!==b.dataset.i);qch(true)},
+ rmimg:b=>{const it=findI(b.dataset.q,b.dataset.i);it.img='';it.nw=it.nh=0;qch(true)},
+ addhf:b=>{S[b.dataset.l].push({id:uid(),label:'',value:''});renderHdr();ch()},
+ delhf:b=>{S[b.dataset.l]=S[b.dataset.l].filter(f=>f.id!==b.dataset.id);renderHdr();ch()},
+ addhm:()=>{S.headMid.push({id:uid(),text:'',bold:false});renderHdr();ch()},
+ delhm:b=>{S.headMid=S.headMid.filter(f=>f.id!==b.dataset.id);renderHdr();ch()},
+ boldhm:b=>{const x=S.headMid.find(f=>f.id===b.dataset.id);x.bold=!x.bold;b.setAttribute('aria-pressed',String(!!x.bold));ch()},
+ rmlogo:()=>{S.set.logo='';renderHdr();ch()},
+ deflogo:()=>{S.set.logo=DEFAULT_LOGO;S.set.logoNW=243;S.set.logoNH=144;renderHdr();ch()},
+ step:b=>stepSet(b.dataset.k,+b.dataset.d),
+ clearfont:()=>{S.set.fontData='';S.set.fontName='';applyFont();renderX();ch()},
+ zoom:b=>{const d=+b.dataset.d;zmul=d===0?1:Math.max(.5,Math.min(3,zmul+d));fit()},
+ saveproj:()=>saveFile(new Blob([JSON.stringify(S)],{type:'application/json'}),'exam-project.json'),
+ reset:()=>{pushUndo('همه‌چیز پاک شد');const keep=S.set;S=defaultState();S.questions=[];S.isSample=false;S.set=Object.assign(S.set,{logo:keep.logo,logoNW:keep.logoNW,logoNH:keep.logoNH});initAll();save()},
+ pdf:()=>exportPDF(),
+ docx:()=>exportDOCX(),
+ import:()=>openImport(),
+ runimport:()=>runImport(),
+ stopimport:()=>{imp.ctl&&imp.ctl.abort()}
+};
+document.addEventListener('click',e=>{
+ if(e.target===$('scrim')){closeSheet();return}
+ const b=e.target.closest('[data-act]');if(b&&ACT[b.dataset.act])ACT[b.dataset.act](b);
+});
+document.addEventListener('input',e=>{const el=e.target;if(el.dataset&&el.dataset.f&&el.type!=='file')onField(el)});
+document.addEventListener('change',e=>{const el=e.target;if(el.dataset&&el.dataset.file)onFile(el)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+
+/* ---------- sheet rendering ---------- */
+function sheetCss(word){
+ const z=S.set.fontSize||11,P=word?'':'.sheet ';
+ const fam=(S.set.fontName?`"${S.set.fontName}",`:'')+`Tahoma,"B Nazanin",Arial,sans-serif`;
+ return `.sheet{font-family:${fam};font-size:${z}pt;line-height:1.7;color:#000;direction:rtl;text-align:right}
+${P}td,${P}th{font-family:${fam};font-size:${z}pt;line-height:1.7}
+.s-ans{margin:2px 0;padding:1px 8px;border-right:3px solid #2e9e57;background:#edf8f0;color:#14532d}`;
+}
+const B='1px solid #000';
+const TBL='<table dir="rtl" style="width:100%;border-collapse:collapse;table-layout:fixed">';
+const COLS='<colgroup><col width="38" style="width:38px"><col><col width="48" style="width:48px"></colgroup>';
+const tdN=(c,x)=>`<td style="border:none;padding:0 3px;vertical-align:top;${x||''}">${c}</td>`;
+const NT='<table dir="rtl" style="width:100%;border-collapse:collapse;border:none">';
+function ck(f){
+ if(FORWORD)return f?'●':'○';
+ return `<span style="display:inline-block;width:.75em;height:.75em;border:1px solid #000;border-radius:50%;vertical-align:-1px;${f?'background:#000;':''}"></span>`;
+}
+function imgDims(it){
+ const M={xs:60,s:90,m:130,l:190}[it.imgW||'s'];const w0=it.nw||1,h0=it.nh||1;
+ return w0>=h0?[M,Math.round(M*h0/w0)]:[Math.round(M*w0/h0),M];
+}
+function spaceDiv(it){const cm=(it.space===''||it.space==null)?S.set.space:(+it.space||0);return cm>0?`<div style="height:${cm}cm">&nbsp;</div>`:''}
+function ansTxt(q,it){
+ if(q.type==='mcq'){const k=it.correct;return k>=0?`گزینه ${faInt(k+1)}`+(it.options[k]?`: ${esc(it.options[k])}`:''):'—'}
+ if(q.type==='tf')return it.tf==='t'?'صحیح':it.tf==='f'?'غلط':'—';
+ return it.answer?nl(it.answer):'—';
+}
+function itemHTML(q,it,i){
+ const inline=S.set.ans==='inline',multi=q.items.length>1;
+ const lab=multi?`<b>${LBL[i]})</b>&nbsp;`:'';
+ const top=lab+nl(it.text);
+ const extra=[];
+ if(it.img){const[w,h]=imgDims(it);extra.push(tdN(`<img src="${it.img}" width="${w}" height="${h}" alt="">`,'width:1px;text-align:center'))}
+ if(q.type==='tf')extra.push(tdN(`ص ${ck(inline&&it.tf==='t')} &nbsp;&nbsp; غ ${ck(inline&&it.tf==='f')}`,'width:1px;white-space:nowrap'));
+ let h=extra.length?`${NT}<tr>${tdN(top)}${extra.join('')}</tr></table>`:`<div>${top}</div>`;
+ if(q.type==='mcq'){
+  const c={'4':4,'2':2,'1':1}[q.optLayout]||4;
+  const cells=it.options.map((t,k)=>{const ok=inline&&it.correct===k;return tdN(`${faInt(k+1)}) ${ok?'<b><u>'+esc(t)+'</u></b>':esc(t)} ${ck(ok)}`,`width:${100/c}%`)});
+  let rows='';for(let r=0;r<4;r+=c)rows+='<tr>'+cells.slice(r,r+c).join('')+'</tr>';
+  h+=`${NT}${rows}</table>`;
+ }else if(q.type==='essay'){
+  if(inline&&it.answer)h+=`<div class="s-ans"><b>پاسخ:</b> ${nl(it.answer)}</div>`;else h+=spaceDiv(it);
+ }else if(q.type==='blank'){
+  if(inline&&it.answer)h+=`<div class="s-ans"><b>پاسخ:</b> ${nl(it.answer)}</div>`;
+ }
+ return h;
+}
+function qRows(q){
+ const r=[];if(q.title)r.push({c:`<div><u>${esc(q.title)}</u></div>`});
+ q.items.forEach((it,i)=>r.push({c:itemHTML(q,it,i)}));return r;
+}
+function aRows(q){
+ const multi=q.items.length>1;
+ return q.items.map((it,i)=>({c:(multi?`<b>${LBL[i]})</b>&nbsp;`:'')+ansTxt(q,it)}));
+}
+function grp(n,rows,score){
+ const N=rows.length;if(!N)return '';
+ return '<tbody>'+rows.map((r,i)=>{
+  const st=`border:${B};padding:3px 8px;vertical-align:top;${i<N-1?'border-bottom:none;':''}${i>0?'border-top:none;':''}`;
+  return `<tr>${i===0?`<td rowspan="${N}" style="border:${B};padding:3px 2px;vertical-align:top;text-align:center">${faInt(n)}</td>`:''}<td style="${st}">${r.c}</td>${i===0?`<td rowspan="${N}" style="border:${B};padding:3px 2px;vertical-align:top;text-align:center">${scTxt(score)}</td>`:''}</tr>`}).join('')+'</tbody>';
+}
+function thRow(title){
+ const s=`background:#d9d9d9;border:${B};padding:3px;text-align:center;font-weight:bold`;
+ return `<thead><tr><th style="${s}">ردیف</th><th style="${s}">${esc(title)}</th><th style="${s}">بارم</th></tr></thead>`;
+}
+function footRow(){return S.set.footer?`<tbody><tr><td colspan="3" style="border:${B};text-align:center;font-weight:bold;padding:5px">${esc(S.set.footer)}</td></tr></tbody>`:''}
+function headHTML(){
+ const z=S.set.fontSize||11;
+ const sp=v=>esc(v||'').replace(/ /g,'&nbsp;');
+ const col=fs=>fs.filter(f=>f.label||f.value).map(f=>`<div style="line-height:1.9">${f.label?`<b>${esc(f.label)} :</b> `:''}${sp(f.value)}</div>`);
+ const left=col(S.headLeft);
+ if(S.set.showTotal)left.push(`<div><b>بارم کل :</b> ${fa(total())}</div>`);
+ const mid=S.headMid.filter(x=>x.text.trim()).map(x=>`<div style="${x.bold?'font-weight:bold':''}">${esc(x.text)}</div>`).join('');
+ let logo='';
+ if(S.set.logo){const h=S.set.logoH||75,w=Math.round(h*(S.set.logoNW||1)/(S.set.logoNH||1));logo=`<img src="${S.set.logo}" width="${w}" height="${h}" alt="">`}
+ const inner=`<table dir="rtl" style="width:100%;border-collapse:collapse"><tr><td colspan="2" style="border:none;border-bottom:${B};text-align:center;font-weight:bold;font-size:${(z*1.2).toFixed(1)}pt;padding:3px 4px">${esc(S.set.headTitle||'')}</td></tr><tr><td style="border:none;border-left:${B};text-align:center;vertical-align:middle;padding:6px 4px;width:55%">${mid}</td><td style="border:none;text-align:center;vertical-align:middle;padding:4px">${logo}</td></tr></table>`;
+ const c=(x,w,pad)=>`<td style="border:${B};vertical-align:top;width:${w};padding:${pad}">${x}</td>`;
+ return `<div style="margin-bottom:-1px"><table dir="rtl" style="width:100%;border-collapse:collapse;table-layout:fixed"><tr>${c(col(S.headRight).join(''),'29%','6px 8px')}${c(inner,'47%','0')}${c(left.join(''),'24%','6px 8px')}</tr></table></div>`;
+}
+
+/* ---------- pagination ---------- */
+function paginate(groups,o){
+ const m=$('measure');
+ const mt=h=>{m.innerHTML=`${TBL}${COLS}${h}</table>`;return m.firstElementChild.offsetHeight};
+ const th=p=>thRow(`${o.title} صفحه (${faInt(p)})`);
+ let headH=0;if(o.head){m.innerHTML=o.head;headH=m.offsetHeight}
+ const H=Math.floor((296-16)*96/25.4)-10;
+ const thH=mt(th(1)),fH=o.footer?mt(o.footer):0,gh=groups.map(g=>mt(g));
+ const pages=[[]];let used=0,lim=H-headH-thH;
+ groups.forEach((g,i)=>{
+  if(pages[pages.length-1].length&&used+gh[i]>lim){pages.push([]);used=0;lim=H-thH}
+  pages[pages.length-1].push(i);used+=gh[i];
+ });
+ if(o.footer&&used+fH>lim){const last=pages[pages.length-1];if(last.length>1){pages.push([last.pop()])}else pages.push([])}
+ return pages.map((idx,p)=>`<div class="page">${p===0?o.head:''}${TBL}${COLS}${th(p+1)}${idx.map(i=>groups[i]).join('')}${p===pages.length-1?o.footer:''}</table></div>`).join('');
+}
+
+
+function updatePreview(){
+ FORWORD=false;
+ $('sheetcss').textContent=sheetCss(false);
+ const g=S.questions.map((q,i)=>grp(i+1,qRows(q),q.score));
+ let html=paginate(g,{head:headHTML(),title:S.set.colTitle||'شرح سؤالات',footer:footRow()});
+ if(S.set.ans==='end'&&S.questions.length){
+  const a=S.questions.map((q,i)=>grp(i+1,aRows(q),q.score));
+  html+=paginate(a,{head:'',title:'پاسخنامه',footer:''});
+ }
+ $('pages').innerHTML=html;fit();updateHprev();
+}
+function fit(){
+ const pv=$('pv'),w=pv.clientWidth-20;if(w<=0)return;
+ const base=Math.min(1,w/(210/25.4*96));
+ $('pages').style.zoom=base*zmul;
+}
+window.addEventListener('resize',()=>{if(wide()&&TAB==='p')setTab('q',true);fit()});
+
+/* ---------- saving files ---------- */
+async function saveFile(blob,name){
+ const d=await cap('downloads');
+ if(d){
+  try{await d.save({filename:name,data:blob});return true}
+  catch(e){if(!e||e.code!=='declined')toast('ذخیره‌ی فایل در این نمایش ممکن نشد.');return false}
+ }
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2500);return true;
+}
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('load '+src));document.head.appendChild(s)})}
+let busyExport=false;
+async function withBusy(msg,fn){
+ if(busyExport)return;busyExport=true;sheetBusy=true;
+ openSheet(`<h2>${msg}</h2><div class="bar-prog"><i id="pbar"></i></div><p class="hint" id="ptxt">لطفاً صبر کنید…</p>`);
+ try{await fn()}catch(e){console.error(e);closeSheet(true);toast('ساخت فایل ناموفق بود. دوباره امتحان کنید.')}
+ finally{busyExport=false;sheetBusy=false;if(!$('sheetui').hidden&&$('ptxt'))closeSheet(true)}
+}
+const prog=(f,t)=>{const b=$('pbar');if(b)b.style.width=Math.round(f*100)+'%';const x=$('ptxt');if(x&&t)x.textContent=t};
+
+/* ---------- PDF export (A4 pages drawn as images) ---------- */
+async function pageToCanvas(pageEl,scale){
+ const wrap=document.createElement('div');
+ wrap.setAttribute('class','sheet');wrap.setAttribute('dir','rtl');
+ wrap.setAttribute('style','width:794px;height:1123px;box-sizing:border-box;padding:30.24px;background:#fff;overflow:hidden;color:#000');
+ const st=document.createElement('style');st.textContent=fontFaceCss()+sheetCss(false);wrap.appendChild(st);
+ const inner=document.createElement('div');inner.innerHTML=pageEl.innerHTML;wrap.appendChild(inner);
+ const xml=new XMLSerializer().serializeToString(wrap);
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="794" height="1123"><foreignObject x="0" y="0" width="794" height="1123">${xml}</foreignObject></svg>`;
+ const img=new Image();
+ await new Promise((res,rej)=>{img.onload=res;img.onerror=()=>rej(new Error('svg render'));img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)});
+ if(document.fonts&&S.set.fontName){try{await document.fonts.load(`12pt "${S.set.fontName}"`)}catch(e){}}
+ const c=document.createElement('canvas');c.width=794*scale;c.height=1123*scale;
+ const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
+ return c;
+}
+function makePDF(pages){
+ const enc=new TextEncoder(),parts=[],offs=[];let off=0;
+ const push=b=>{const u=typeof b==='string'?enc.encode(b):b;parts.push(u);off+=u.length};
+ const W=595.28,H=841.89,N=pages.length;
+ push('%PDF-1.4\n');
+ offs[1]=off;push('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+ offs[2]=off;push(`2 0 obj\n<< /Type /Pages /Count ${N} /Kids [${pages.map((_,i)=>`${3+3*i} 0 R`).join(' ')}] >>\nendobj\n`);
+ pages.forEach((p,i)=>{
+  const pg=3+3*i,ct=4+3*i,im=5+3*i,content=`q ${W} 0 0 ${H} 0 0 cm /Im0 Do Q`;
+  offs[pg]=off;push(`${pg} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /XObject << /Im0 ${im} 0 R >> >> /Contents ${ct} 0 R >>\nendobj\n`);
+  offs[ct]=off;push(`${ct} 0 obj\n<< /Length ${content.length} >>\nstream\n${content}\nendstream\nendobj\n`);
+  offs[im]=off;push(`${im} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.bytes.length} >>\nstream\n`);push(p.bytes);push('\nendstream\nendobj\n');
+ });
+ const xr=off,total=3+3*N;
+ push(`xref\n0 ${total}\n0000000000 65535 f \n`);
+ for(let i=1;i<total;i++)push(String(offs[i]).padStart(10,'0')+' 00000 n \n');
+ push(`trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`);
+ return new Blob(parts,{type:'application/pdf'});
+}
+function exportPDF(){
+ return withBusy('در حال ساخت PDF',async()=>{
+  clearTimeout(tm);updatePreview();
+  const els=[...$('pages').children],out=[];
+  for(let i=0;i<els.length;i++){
+   prog(i/els.length,`صفحه‌ی ${faInt(i+1)} از ${faInt(els.length)}`);
+   const c=await pageToCanvas(els[i],2);
+   const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.92));
+   out.push({bytes:new Uint8Array(await blob.arrayBuffer()),w:c.width,h:c.height});
+   c.width=c.height=0;
+  }
+  prog(1,'در حال ذخیره…');
+  closeSheet(true);
+  const ok=await saveFile(makePDF(out),'exam.pdf');
+  if(ok)toast('PDF آماده شد.');
+ });
+}
+
+/* ---------- Word export (.docx built by hand with JSZip) ---------- */
+const X=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const DW={q:[540,9326,680],content:9100};
+let dxMedia=[];
+function dxFont(){return X(S.set.fontName||'Tahoma')}
+function dxSz(){return Math.round((S.set.fontSize||11)*2)}
+function rPr(o){
+ o=o||{};const f=dxFont(),sz=o.sz||dxSz();
+ return `<w:rPr><w:rFonts w:ascii="${f}" w:hAnsi="${f}" w:cs="${f}"/>${o.b?'<w:b/><w:bCs/>':''}${o.color?`<w:color w:val="${o.color}"/>`:''}<w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/>${o.u?'<w:u w:val="single"/>':''}<w:rtl/></w:rPr>`;
+}
+function run(t,o){
+ return String(t==null?'':t).split('\n').map((p,i)=>`<w:r>${rPr(o)}${i?'<w:br/>':''}<w:t xml:space="preserve">${X(p)}</w:t></w:r>`).join('');
+}
+function P(inner,o){
+ o=o||{};
+ return `<w:p><w:pPr>${o.shd?`<w:shd w:val="clear" w:color="auto" w:fill="${o.shd}"/>`:''}<w:bidi/><w:spacing w:before="0" w:after="0" w:line="${o.line||400}" w:lineRule="${o.rule||'auto'}"/>${o.jc?`<w:jc w:val="${o.jc}"/>`:''}</w:pPr>${inner||''}</w:p>`;
+}
+function imgRun(dataUrl,w,h){
+ const m=/^data:image\/(jpeg|jpg|png);base64,(.+)$/.exec(dataUrl||'');if(!m)return '';
+ const n=dxMedia.length+1,ext=m[1]==='png'?'png':'jpeg',name=`image${n}.${ext}`;
+ dxMedia.push({name,ext,b64:m[2]});
+ const cx=Math.round(w*9525),cy=Math.round(h*9525);
+ return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${n}" name="Picture ${n}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${n}" name="${name}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdImg${n}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`;
+}
+const dxEnd=c=>/<\/w:tbl>$/.test(c)?c+P('',{line:20,rule:'exact'}):(c||P(''));
+function tcBd(t,b){
+ const e=(n,on)=>`<w:${n} w:val="${on?'single':'nil'}" w:sz="4" w:space="0" w:color="000000"/>`;
+ return `<w:tcBorders>${e('top',t)}${e('left',true)}${e('bottom',b)}${e('right',true)}</w:tcBorders>`;
+}
+function tc(w,inner,o){
+ o=o||{};
+ return `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${o.span?`<w:gridSpan w:val="${o.span}"/>`:''}${o.vm?`<w:vMerge${o.vm==='r'?' w:val="restart"':''}/>`:''}${o.bd||''}${o.fill?`<w:shd w:val="clear" w:color="auto" w:fill="${o.fill}"/>`:''}</w:tcPr>${dxEnd(inner)}</w:tc>`;
+}
+function tbl(widths,rowsXml,o){
+ o=o||{};const sum=widths.reduce((a,b)=>a+b,0);
+ const bd=o.borders||'';
+ return `<w:tbl><w:tblPr><w:bidiVisual/><w:tblW w:w="${sum}" w:type="dxa"/>${bd}<w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="${o.mar==null?100:o.mar}" w:type="dxa"/><w:right w:w="${o.mar==null?100:o.mar}" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${widths.map(w=>`<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${rowsXml}</w:tbl>`;
+}
+const tr=(cells,hdr)=>`<w:tr><w:trPr><w:cantSplit/>${hdr?'<w:tblHeader/>':''}</w:trPr>${cells}</w:tr>`;
+const ck2=f=>f?'●':'○';
+function dxItem(q,it,i){
+ const inline=S.set.ans==='inline',multi=q.items.length>1,W=DW.content;
+ const lab=multi?run(LBL[i]+') ',{b:1}):'';
+ const topP=P(lab+run(it.text||''));
+ const extras=[];
+ if(it.img){const[w,h]=imgDims(it);extras.push({w:w*15+160,xml:P(imgRun(it.img,w,h),{jc:'center'})})}
+ if(q.type==='tf')extras.push({w:1700,xml:P(run('ص '+ck2(inline&&it.tf==='t')+'   غ '+ck2(inline&&it.tf==='f')))});
+ let out='';
+ if(extras.length){
+  const ws=[W-extras.reduce((a,e)=>a+e.w,0),...extras.map(e=>e.w)];
+  out+=tbl(ws,tr([tc(ws[0],topP),...extras.map((e,k)=>tc(ws[k+1],e.xml))].join('')),{mar:40})+P('',{line:20,rule:'exact'});
+ }else out+=topP;
+ if(q.type==='mcq'){
+  const c={'4':4,'2':2,'1':1}[q.optLayout]||4,cw=Math.floor(W/c),ws=Array(c).fill(cw);let rows='';
+  for(let r=0;r<4;r+=c){
+   rows+=tr(it.options.slice(r,r+c).map((t,k)=>{const idx=r+k,ok=inline&&it.correct===idx;return tc(cw,P(run(`${faInt(idx+1)}) ${t} ${ck2(ok)}`,{b:ok,u:ok})))}).join(''));
+  }
+  out+=tbl(ws,rows,{mar:40})+P('',{line:20,rule:'exact'});
+ }else if(q.type==='essay'||q.type==='blank'){
+  if(inline&&it.answer)out+=P(run('پاسخ: ',{b:1,color:'14532D'})+run(it.answer,{color:'14532D'}),{shd:'EDF8F0'});
+  else if(q.type==='essay'){const cm=(it.space===''||it.space==null)?S.set.space:(+it.space||0);if(cm>0)out+=P('',{line:Math.round(cm*567),rule:'exact'})}
+ }
+ return out;
+}
+function dxRows(q){
+ const r=[];if(q.title)r.push({c:P(run(q.title,{u:1}))});
+ q.items.forEach((it,i)=>r.push({c:dxItem(q,it,i)}));return r;
+}
+function dxARows(q){
+ const multi=q.items.length>1;
+ return q.items.map((it,i)=>{
+  let t;
+  if(q.type==='mcq'){const k=it.correct;t=k>=0?`گزینه ${faInt(k+1)}`+(it.options[k]?`: ${it.options[k]}`:''):'—'}
+  else if(q.type==='tf')t=it.tf==='t'?'صحیح':it.tf==='f'?'غلط':'—';
+  else t=it.answer||'—';
+  return {c:P((multi?run(LBL[i]+') ',{b:1}):'')+run(t))};
+ });
+}
+function dxGroup(n,rows,score){
+ const N=rows.length,[wn,wc,ws]=DW.q;let out='';
+ rows.forEach((r,i)=>{
+  const bd=tcBd(i===0,i===N-1);
+  out+=tr(tc(wn,i===0?P(run(faInt(n)),{jc:'center'}):P(''),{vm:i===0?'r':'c',bd})+tc(wc,r.c,{bd})+tc(ws,i===0?P(run(scTxt(score)),{jc:'center'}):P(''),{vm:i===0?'r':'c',bd}));
+ });
+ return out;
+}
+function dxTh(title){
+ const f=(w,t)=>tc(w,P(run(t,{b:1}),{jc:'center'}),{bd:tcBd(true,true),fill:'D9D9D9'});
+ return tr(f(DW.q[0],'ردیف')+f(DW.q[1],title)+f(DW.q[2],'بارم'),true);
+}
+function dxHead(){
+ const z=S.set.fontSize||11;
+ const col=fs=>fs.filter(f=>f.label||f.value).map(f=>P((f.label?run(f.label+' : ',{b:1}):'')+run(f.value||''),{line:440})).join('');
+ let left=col(S.headLeft);if(S.set.showTotal)left+=P(run('بارم کل : ',{b:1})+run(fa(total())),{line:440});
+ const mid=S.headMid.filter(x=>x.text.trim()).map(x=>P(run(x.text,{b:x.bold}),{jc:'center'})).join('');
+ let logo='';
+ if(S.set.logo){let h=S.set.logoH||75,w=Math.round(h*(S.set.logoNW||1)/(S.set.logoNH||1));if(w>130){h=Math.round(h*130/w);w=130}logo=P(imgRun(S.set.logo,w,h),{jc:'center'})}
+ const widths=[3058,4957,2531],nw=4780,n1=2630,n2=nw-n1;
+ const line='<w:val w:val="single"/>';
+ const nb=`<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/></w:tblBorders>`;
+ const innerRows=tr(tc(nw,P(run(S.set.headTitle||'',{b:1,sz:Math.round(z*1.2*2)}),{jc:'center'}),{span:2}))+tr(tc(n1,mid)+tc(n2,logo));
+ const inner=tbl([n1,n2],innerRows,{borders:nb,mar:40});
+ const ob=`<w:tblBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/></w:tblBorders>`;
+ const bd=tcBd(true,true);
+ return tbl(widths,tr(tc(widths[0],col(S.headRight),{bd})+tc(widths[1],inner,{bd})+tc(widths[2],left,{bd})),{borders:ob});
+}
+async function buildDocx(){
+ await loadJSZip();
+ dxMedia=[];
+ let body=dxHead()+P('',{line:20,rule:'exact'});
+ const rows=S.questions.map((q,i)=>dxGroup(i+1,dxRows(q),q.score)).join('');
+ const foot=S.set.footer?tr(tc(DW.q[0]+DW.q[1]+DW.q[2],P(run(S.set.footer,{b:1}),{jc:'center'}),{span:3,bd:tcBd(true,true)})):'';
+ body+=tbl(DW.q,dxTh(S.set.colTitle||'شرح سؤالات')+rows+foot);
+ if(S.set.ans==='end'&&S.questions.length){
+  body+=P('<w:r><w:br w:type="page"/></w:r>')+P(run('پاسخنامه',{b:1}),{jc:'center'});
+  body+=tbl(DW.q,dxTh('پاسخنامه')+S.questions.map((q,i)=>dxGroup(i+1,dxARows(q),q.score)).join(''));
+ }
+ body+=P('');
+ const NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"';
+ const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ${NS}><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="680" w:right="680" w:bottom="680" w:left="680" w:header="400" w:footer="400" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+ const f=dxFont();
+ const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="${f}" w:hAnsi="${f}" w:cs="${f}"/><w:sz w:val="${dxSz()}"/><w:szCs w:val="${dxSz()}"/><w:lang w:val="fa-IR" w:bidi="fa-IR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style><w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:uiPriority w:val="99"/><w:semiHidden/><w:tblPr><w:tblInd w:w="0" w:type="dxa"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style></w:styles>`;
+ const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpeg" ContentType="image/jpeg"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>`;
+ const rels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`;
+ const drels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdSt" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>${dxMedia.map((m,i)=>`<Relationship Id="rIdImg${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${m.name}"/>`).join('')}</Relationships>`;
+ const zip=new JSZip();
+ zip.file('[Content_Types].xml',ct);zip.file('_rels/.rels',rels);zip.file('word/document.xml',doc);zip.file('word/styles.xml',styles);zip.file('word/_rels/document.xml.rels',drels);
+ dxMedia.forEach(m=>zip.file('word/media/'+m.name,m.b64,{base64:true}));
+ return zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+}
+let zipP;
+function loadJSZip(){
+ if(window.JSZip)return Promise.resolve();
+ return zipP||(zipP=loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js').catch(e=>{zipP=null;throw e}));
+}
+function exportDOCX(){
+ return withBusy('در حال ساخت فایل Word',async()=>{
+  prog(.4,'در حال ساخت…');
+  const blob=await buildDocx();
+  closeSheet(true);
+  const ok=await saveFile(blob,'exam.docx');
+  if(ok)toast('فایل Word آماده شد.');
+ });
+}
+
+
+/* ---------- import questions from a PDF or photos ---------- */
+const imp={files:[],ctl:null,running:false};
+const PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const PDFJS_WORKER='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+let pdfP;
+function loadPdfJs(){
+ return pdfP||(pdfP=loadScript(PDFJS).then(()=>{
+  const l=window.pdfjsLib;if(!l)throw new Error('pdfjs missing');
+  l.GlobalWorkerOptions.workerSrc=PDFJS_WORKER;return l;
+ }).catch(e=>{pdfP=null;throw e}));
+}
+function openImport(){
+ openSheet(`<h2>ورود سوال از فایل</h2>
+  <label class="drop"><b>انتخاب PDF یا عکس برگه</b><span class="hint" id="imp-files">چند عکس هم می‌توانید انتخاب کنید</span>
+   <input type="file" accept="application/pdf,image/*" multiple data-file="import"></label>
+  <div class="grp" style="padding:10px 12px;background:var(--surface2);border:0">
+   <div class="seg" role="radiogroup" aria-label="روش افزودن">
+    <label><input type="radio" name="impmode" value="replace" ${S.isSample||!S.questions.length?'checked':''}>جایگزین سوال‌های فعلی</label>
+    <label><input type="radio" name="impmode" value="append" ${S.isSample||!S.questions.length?'':'checked'}>اضافه به انتها</label></div>
+   <label class="switch"><span>اطلاعات سربرگ (درس، تاریخ، زمان…) را هم بخوان</span><input type="checkbox" id="imp-head"></label>
+  </div>
+  <p class="hint">Claude هر برگه را می‌خواند. این کار از سهمیه‌ی استفاده‌ی خودِ شما در Claude مصرف می‌شود (هر ۳ صفحه حدود یک درخواست). نتیجه را حتماً یک بار بخوانید و اصلاح کنید.</p>
+  <div id="imp-prog" hidden><div class="bar-prog"><i id="imp-bar"></i></div><p class="hint" id="imp-txt" style="margin-top:6px"></p></div>
+  <div class="row"><button type="button" class="btn pri grow" id="imp-go" data-act="runimport" disabled>شروع استخراج</button><button type="button" class="btn" id="imp-close" data-act="closesheet">بستن</button></div>`);
+ imp.files=[];
+}
+function impShowFiles(){
+ const t=$('imp-files');if(!t)return;
+ t.textContent=imp.files.length?imp.files.map(f=>f.name).join('، '):'چند عکس هم می‌توانید انتخاب کنید';
+ $('imp-go').disabled=!imp.files.length;
+}
+const impTxt=(f,t)=>{const b=$('imp-bar');if(b)b.style.width=Math.round(f*100)+'%';const x=$('imp-txt');if(x&&t!=null)x.textContent=t};
+function impSetRunning(on){
+ imp.running=on;sheetBusy=on;
+ const g=$('imp-go');if(!g)return;
+ $('imp-prog').hidden=false;
+ g.textContent=on?'توقف':'شروع استخراج';g.dataset.act=on?'stopimport':'runimport';g.disabled=false;
+ $('imp-close').hidden=on;
+}
+function isBlank(canvas){
+ const c=document.createElement('canvas');c.width=48;c.height=64;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,48,64);x.drawImage(canvas,0,0,48,64);
+ const d=x.getImageData(0,0,48,64).data;let dark=0;
+ for(let i=0;i<d.length;i+=4)if(d[i]<200)dark++;
+ return dark<4;
+}
+async function pdfPagesToBlobs(file,ctl){
+ const lib=await loadPdfJs();
+ const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;
+ const out=[];
+ for(let p=1;p<=doc.numPages;p++){
+  if(ctl.signal.aborted)throw {code:'cancelled'};
+  impTxt(0.02,`در حال باز کردن صفحه‌ی ${faInt(p)} از ${faInt(doc.numPages)}…`);
+  const page=await doc.getPage(p),v0=page.getViewport({scale:1}),sc=Math.min(2.5,1500/v0.width),vp=page.getViewport({scale:sc});
+  const c=document.createElement('canvas');c.width=Math.round(vp.width);c.height=Math.round(vp.height);
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+  await page.render({canvasContext:x,viewport:vp}).promise;
+  if(!isBlank(c))out.push(await new Promise(r=>c.toBlob(r,'image/jpeg',.9)));
+  c.width=c.height=0;
+ }
+ return out;
+}
+function photoToBlob(file){
+ return new Promise((res,rej)=>{
+  const r=new FileReader();r.onerror=rej;
+  r.onload=()=>{const im=new Image();im.onerror=()=>rej(new Error('bad image'));im.onload=()=>{
+   const k=Math.min(1,1700/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');
+   c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+   const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+   c.toBlob(b=>res(b),'image/jpeg',.9)};im.src=r.result};
+  r.readAsDataURL(file);
+ });
+}
+function impPrompt(a,b,n){
+ return `You are reading photos or scans of a Persian (Farsi, right-to-left) school exam paper. The ${b-a+1===1?'image is page':'images are pages'} ${a}${b>a?'–'+b:''} of ${n}, in order.
+Extract the exam questions and answer with ONE JSON object and nothing else, in exactly this shape:
+{"header":{"organization":"","examTitle":"","academicYear":"","subject":"","grade":"","date":"","time":"","teacher":""},
+ "questions":[{"type":"essay","title":"","score":0.5,"items":[{"text":"","options":["","","",""],"correct":null,"tf":null,"answer":"","hasFigure":false}]}]}
+Rules:
+- One entry in "questions" per numbered row (ردیف) of the paper, in order. "title" is that row's instruction line (for example «گزینه ی صحیح را مشخص کنید.»), without the row number.
+- If a row has sub-parts (الف، ب، ج، …) make each sub-part one object in "items", with the text WITHOUT the «الف)» label. A row with one question has exactly one item.
+- "type": "mcq" = multiple choice with four options (put the options in order 1..4 in "options", without the «1)» numbering); "tf" = true/false statements (ص / غ); "blank" = fill-in-the-blank (keep each blank as "........"); "essay" = everything else. For types other than "mcq" use "options":["","","",""].
+- "score" (at row level, next to "title"): ONE number per row = the total score shown in the score column (بارم) for that whole row. Never give a score per sub-part or per option. Convert Persian digits and the slash decimal: ۰/۵ means 0.5, ۱/۵ means 1.5, ۱ means 1. If the sheet prints separate scores for sub-parts, add them together into the row score. If unreadable use null.
+- Copy the Persian text exactly as printed. Do not translate, fix or shorten it.
+- Do NOT solve the questions: leave "answer" empty, "correct" null and "tf" null, unless the page itself prints an answer key.
+- "hasFigure": true when the question has a picture, map or diagram that cannot be typed as text.
+- Ignore the header block (school, student name, class, date, time), column titles, page numbers and closing phrases such as «موفق باشید». Put what the header says into "header" (empty string when absent).
+- A question that clearly continues from the previous page belongs to the same row. Pages without questions add nothing.`;
+}
+function fromAI(raw){
+ const types=['essay','mcq','tf','blank'];
+ return (Array.isArray(raw&&raw.questions)?raw.questions:[]).map(q=>{
+  const type=types.includes(q.type)?q.type:'essay';
+  const items=(Array.isArray(q.items)&&q.items.length?q.items:[{}]).map(x=>{
+   x=x||{};
+   const it=newItem({text:String(x.text||'').trim(),answer:String(x.answer||'').trim(),needsImage:!!x.hasFigure});
+   if(type==='mcq'){
+    const o=Array.isArray(x.options)?x.options.map(s=>String(s==null?'':s).trim()):[];while(o.length<4)o.push('');it.options=o.slice(0,4);
+    it.correct=Number.isInteger(x.correct)&&x.correct>=0&&x.correct<4?x.correct:-1;
+   }
+   if(type==='tf')it.tf=(x.tf==='t'||x.tf===true)?'t':(x.tf==='f'||x.tf===false)?'f':'';
+   return it;
+  });
+  let sc=(q.score==null||q.score==='')?null:num(q.score);
+  if(sc==null){const ss=(Array.isArray(q.items)?q.items:[]).filter(x=>x&&x.score!=null&&x.score!=='');sc=ss.length?Math.round(ss.reduce((a,x)=>a+num(x.score),0)*100)/100:''}
+  const nq=newQ(type,{title:String(q.title||'').trim(),score:sc,items});
+  if(type==='mcq'&&Math.max(...items.map(i=>Math.max(...i.options.map(s=>s.length))))>22)nq.optLayout='2';
+  return nq;
+ });
+}
+function applyHeader(h){
+ if(!h)return;
+ const g=k=>String(h[k]||'').trim();
+ if(g('organization'))S.set.headTitle=g('organization');
+ const mid=S.headMid;
+ if(g('examTitle')&&mid[0])mid[0].text=g('examTitle');
+ if(g('academicYear')&&mid[1])mid[1].text='سال تحصیلی '+g('academicYear').replace(/^سال تحصیلی\s*[:：]?\s*/,'');
+ const setL=(has,val)=>{if(!val)return;let f=S.headLeft.find(x=>x.label.includes(has));if(!f){f={id:uid(),label:has,value:''};S.headLeft.push(f)}f.value=val};
+ setL('درس',g('subject'));setL('تاریخ',g('date'));setL('زمان',g('time'));setL('پایه',g('grade'));
+ if(g('teacher')){const f=S.headLeft.find(x=>x.label.includes('دبیر'));if(f)f.value=g('teacher')}
+}
+function impError(e){
+ const c=e&&e.code;
+ if(c==='cancelled')return 'استخراج متوقف شد.';
+ if(c==='not_granted')return 'اجازه‌ی استفاده از Claude داده نشد.';
+ if(c==='rate_limited')return 'سهمیه‌ی استفاده‌ی شما در Claude فعلاً پر است. کمی بعد دوباره امتحان کنید.';
+ if(c==='invalid_json'||c==='empty_completion')return 'پاسخ قابل خواندن نبود. دوباره امتحان کنید یا عکس واضح‌تری بدهید.';
+ if(c==='image_rejected')return 'یکی از تصویرها پذیرفته نشد. فایل دیگری امتحان کنید.';
+ if(e&&e.pdf)return 'خواندن PDF ممکن نشد. از برگه عکس بگیرید و عکس را انتخاب کنید.';
+ return 'خطای موقت رخ داد. دوباره امتحان کنید.';
+}
+async function runImport(){
+ if(imp.running||!imp.files.length)return;
+ const sample=await cap('sample');
+ if(!sample||!sample.json){impSetRunning(false);$('imp-prog').hidden=false;impTxt(0,'ورود خودکار فقط داخل خودِ Claude کار می‌کند.');return}
+ const caps=await (sample.limits?sample.limits().catch(()=>null):Promise.resolve(null));
+ if(!caps||!caps.images){$('imp-prog').hidden=false;impTxt(0,'ارسال تصویر به Claude در این نمایش فعال نیست.');return}
+ const replace=(document.querySelector('input[name="impmode"]:checked')||{}).value==='replace';
+ const withHead=$('imp-head').checked;
+ const ctl=new AbortController();imp.ctl=ctl;impSetRunning(true);
+ const undo=snapUndo();let questions=[],header=null,done=0,err=null;
+ try{
+  impTxt(0.02,'در حال آماده‌سازی صفحه‌ها…');
+  const blobs=[];
+  for(const f of imp.files){
+   if(ctl.signal.aborted)throw {code:'cancelled'};
+   if(f.type==='application/pdf'||/\.pdf$/i.test(f.name)){
+    try{blobs.push(...await pdfPagesToBlobs(f,ctl))}catch(e){if(e&&e.code==='cancelled')throw e;e.pdf=true;throw e}
+   }else blobs.push(await photoToBlob(f));
+  }
+  if(!blobs.length)throw {code:'empty_completion'};
+  const MAXP=12;let pages=blobs;
+  if(pages.length>MAXP){pages=pages.slice(0,MAXP);toast('فقط ۱۲ صفحه‌ی اول خوانده می‌شود.')}
+  const per=Math.max(1,Math.min(caps.images.maxCount||1,3)),N=pages.length,batches=Math.ceil(N/per);
+  for(let b=0;b<N;b+=per){
+   const bi=b/per;
+   impTxt(0.1+0.85*bi/batches,`Claude در حال خواندن صفحه‌ی ${faInt(b+1)}${per>1&&b+per<N?' تا '+faInt(b+per):per>1&&N-b>1?' تا '+faInt(N):''} از ${faInt(N)}…`);
+   const r=await sample.json(impPrompt(b+1,Math.min(b+per,N),N),{images:pages.slice(b,b+per),signal:ctl.signal,modelTier:'default'});
+   questions.push(...fromAI(r));if(withHead&&r&&r.header&&!header)header=r.header;
+   done=Math.min(b+per,N);
+  }
+  impTxt(1,'');
+ }catch(e){
+  err=e;impTxt(0,impError(e));
+  if(!questions.length){impSetRunning(false);return}
+ }
+ impSetRunning(false);
+ if(!questions.length)return;
+ if(replace)S.questions=[];
+ S.questions.push(...questions);S.isSample=false;
+ if(header)applyHeader(header);
+ openQ.clear();
+ sheetBusy=false;closeSheet(true);
+ renderHdr();renderQs();ch();setTab('q');
+ toast(err?`${faInt(questions.length)} سوال وارد شد (بقیه‌ی صفحه‌ها نشد). ${impError(err)}`:`${faInt(questions.length)} سوال وارد شد. متن و بارم‌ها را بررسی کنید.`,'برگرداندن',undo);
+}
+
+
+/* ---------- init ---------- */
+function syncAll(){applyFont();renderNav();renderHdr();renderX();renderQs()}
+function initAll(){
+ $('ic-import').innerHTML=ICON.scan;$('fab').innerHTML=ICON.plus+'<span>سوال جدید</span>';
+ document.querySelectorAll('[data-act="zoom"]').forEach(b=>{const d=+b.dataset.d;if(d)b.innerHTML=d>0?ICON.plus:ICON.minus});
+ syncAll();setTab(TAB,true);updatePreview();
+}
+initAll();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>updatePreview());
+
+</script>
+</body></html>
